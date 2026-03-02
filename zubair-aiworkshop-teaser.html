@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI GPT Workshop — Zubair Trabzada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Bebas+Neue&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --white: #FFFFFF;
+    --off: #F7F7F5;
+    --ink: #0A0A0A;
+    --violet: #7C3AED;
+    --violet-light: #A78BFA;
+    --violet-glow: rgba(124,58,237,0.1);
+    --violet-border: rgba(124,58,237,0.2);
+    --mid: #6B7280;
+    --rule: #E5E5E5;
+    --red: #EF4444;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── TOP ALERT BAR ── */
+  .alert-bar {
+    background: var(--violet);
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .alert-track {
+    display: inline-flex;
+    animation: scroll 18s linear infinite;
+  }
+
+  .alert-item {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    padding: 0 36px;
+    letter-spacing: 0.04em;
+  }
+
+  .alert-item strong { color: #fff; font-weight: 500; }
+  .alert-sep { color: rgba(255,255,255,0.3); }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 56px;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .nav-logo span { color: var(--violet); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--mid);
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: #22C55E;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #22C55E;
+    animation: blink 1.4s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: calc(100vh - 88px);
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .hero-left {
+    padding: 80px 56px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* big BG letter */
+  .hero-bg-letter {
+    position: absolute;
+    bottom: -60px;
+    left: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 480px;
+    color: rgba(124,58,237,0.04);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-top {}
+
+  .hero-kicker {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--violet);
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: up 0.6s 0.1s forwards;
+  }
+
+  .hero-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 9vw, 136px);
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: up 0.7s 0.2s forwards;
+  }
+
+  .hero-headline .vio { color: var(--violet); }
+  .hero-headline .outline {
+    -webkit-text-stroke: 2px var(--ink);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--mid);
+    max-width: 500px;
+    line-height: 1.75;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: up 0.7s 0.32s forwards;
+  }
+
+  .hero-sub strong { color: var(--ink); font-weight: 500; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--violet);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 16px 32px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: up 0.6s 0.44s forwards;
+  }
+  .btn:hover {
+    background: #6D28D9;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(124,58,237,0.3);
+  }
+  .arr { transition: transform 0.2s; }
+  .btn:hover .arr { transform: translateX(4px); }
+
+  /* hero bottom stats */
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--rule);
+    opacity: 0;
+    animation: fadein 0.7s 0.7s forwards;
+  }
+
+  .hs {
+    display: flex;
+    flex-direction: column;
+  }
+  .hs-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.02em;
+    color: var(--violet);
+    line-height: 1;
+  }
+  .hs-l {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+  }
+
+  /* ── HERO RIGHT: live countdown ── */
+  .hero-right {
+    background: var(--ink);
+    padding: 52px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(124,58,237,0.15) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+  }
+
+  .panel-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadein 0.5s 0.4s forwards;
+  }
+
+  /* typing animation */
+  .typing-block {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadein 0.5s 0.6s forwards;
+  }
+
+  .typing-line {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: rgba(255,255,255,0.25);
+    line-height: 2;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+
+  .typing-line.active {
+    color: #A78BFA;
+  }
+
+  .typing-line.done {
+    color: #22C55E;
+  }
+
+  .typing-line .prompt { color: rgba(124,58,237,0.6); }
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--violet-light);
+    animation: cursor-blink 0.8s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* countdown */
+  .countdown-block {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px;
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadein 0.5s 1s forwards;
+  }
+
+  .cd-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .cd-clock {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .cd-unit {
+    text-align: center;
+  }
+
+  .cd-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    color: var(--violet-light);
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  .cd-sep {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: rgba(255,255,255,0.2);
+    padding-bottom: 6px;
+  }
+
+  .cd-lbl {
+    font-family: 'Fira Code', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .cd-caption {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    margin-top: 14px;
+    font-weight: 300;
+    line-height: 1.6;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── TOOLS MATRIX ── */
+  .tools-section {
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .tools-header {
+    padding: 60px 56px 44px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: end;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tools-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 5.5vw, 80px);
+    line-height: 0.93;
+    letter-spacing: 0.02em;
+  }
+  .tools-headline span { color: var(--violet); }
+
+  .tools-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.8;
+    max-width: 380px;
+    align-self: end;
+  }
+
+  /* tool rows */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--rule);
+    gap: 1px;
+  }
+
+  .tool-row {
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-row:hover { background: var(--off); }
+
+  .tool-status-bar {
+    width: 4px;
+    align-self: stretch;
+    background: var(--violet);
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .tool-status-bar.hot { background: var(--red); opacity: 1; }
+  .tool-status-bar.new { background: #22C55E; opacity: 1; }
+
+  .tool-emoji {
+    width: 60px;
+    text-align: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    padding: 20px 0;
+  }
+
+  .tool-info {
+    flex: 1;
+    padding: 18px 0;
+    border-right: 1px solid var(--rule);
+  }
+
+  .tool-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .tool-use {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+  }
+
+  .tool-tag {
+    padding: 18px 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--violet);
+    white-space: nowrap;
+  }
+
+  .tool-tag.hot { color: var(--red); }
+  .tool-tag.new-tag { color: #22C55E; }
+
+  /* ── CLIFFHANGER ── */
+  .cliff {
+    padding: 100px 56px;
+    background: var(--off);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .cliff-inner {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .cliff-kicker {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--violet);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .cliff-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 5.5vw, 84px);
+    line-height: 0.93;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+  }
+  .cliff-headline span { color: var(--violet); }
+  .cliff-headline .outline {
+    -webkit-text-stroke: 2px var(--ink);
+    color: transparent;
+  }
+
+  .cliff-body {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.8;
+    margin-bottom: 36px;
+    max-width: 360px;
+  }
+  .cliff-body strong { color: var(--ink); font-weight: 500; }
+
+  .cliff-note {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.06em;
+    margin-top: 12px;
+  }
+
+  /* blurred workflow canvas */
+  .workflow-wrap {
+    position: relative;
+    background: var(--ink);
+    border: 2px solid var(--ink);
+    padding: 28px;
+    min-height: 380px;
+    overflow: hidden;
+  }
+
+  .workflow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .wf-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  .wf-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .wf-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .wf-dot:nth-child(1) { background: #EF4444; }
+  .wf-dot:nth-child(2) { background: #F59E0B; }
+  .wf-dot:nth-child(3) { background: #22C55E; }
+
+  /* fake n8n nodes */
+  .nodes-canvas {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    filter: blur(6px);
+    opacity: 0.2;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .node-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .node {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    min-width: 130px;
+  }
+
+  .node-icon {
+    font-size: 14px;
+  }
+
+  .node-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .node-connector {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(124,58,237,0.6), rgba(124,58,237,0.2));
+    position: relative;
+    min-width: 24px;
+    max-width: 48px;
+  }
+
+  .node-connector::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    border-left: 6px solid rgba(124,58,237,0.6);
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+  }
+
+  .node.active { border-color: rgba(124,58,237,0.5); background: rgba(124,58,237,0.1); }
+  .node.done { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.06); }
+
+  .workflow-overlay {
+    position: absolute;
+    inset: 0;
+    top: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(10,10,10,0.6);
+    backdrop-filter: blur(2px);
+  }
+
+  .lock-icon { font-size: 24px; }
+
+  .lock-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet-light);
+  }
+
+  .lock-sub {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.on { opacity: 1; transform: none; }
+  .d1 { transition-delay: 0.1s; }
+  .d2 { transition-delay: 0.22s; }
+  .d3 { transition-delay: 0.34s; }
+</style>
+</head>
+<body>
+
+<!-- ALERT BAR -->
+<div class="alert-bar">
+  <div class="alert-track">
+    <span class="alert-item"><strong>LIVE:</strong> n8n Automation Workshop — Weekly Builds Running Now</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>NEW:</strong> Claude Code + Voice AI Track Just Added</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>609</strong> members already inside and building</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>7-Day Money Back</strong> — No Risk</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>LIVE:</strong> n8n Automation Workshop — Weekly Builds Running Now</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>NEW:</strong> Claude Code + Voice AI Track Just Added</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>609</strong> members already inside and building</span>
+    <span class="alert-item alert-sep">◆</span>
+    <span class="alert-item"><strong>7-Day Money Back</strong> — No Risk</span>
+    <span class="alert-item alert-sep">◆</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AI<span>.</span>GPT Workshop</div>
+  <div class="nav-status">
+    <div class="live-dot"></div>
+    live_session_active // by Zubair Trabzada
+  </div>
+</nav>
+
+<!-- ① HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-bg-letter">AI</div>
+    <div class="hero-top">
+      <div class="hero-kicker">// ai_gpt_workshop.init() — 2025 Edition</div>
+      <h1 class="hero-headline">
+        MASTER<br>
+        <span class="vio">AI TOOLS</span><br>
+        BEFORE<br>
+        <span class="outline">EVERYONE</span><br>
+        ELSE DOES.
+      </h1>
+      <p class="hero-sub">
+        The AI GPT Workshop gives you hands-on training in the AI tools reshaping business, content, and income — <strong>so you stay ahead of the curve, not behind it.</strong>
+      </p>
+      <a href="#" class="btn">Join the Workshop <span class="arr">→</span></a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-n">609+</div>
+        <div class="hs-l">Members Building</div>
+      </div>
+      <div class="hs">
+        <div class="hs-n">$54/mo</div>
+        <div class="hs-l">Full Access</div>
+      </div>
+      <div class="hs">
+        <div class="hs-n">n8n</div>
+        <div class="hs-l">Official Ambassador</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT DARK PANEL -->
+  <div class="hero-right">
+    <div class="panel-label">// your_advantage_window.exe</div>
+
+    <div class="typing-block">
+      <div class="typing-line done"><span class="prompt">▶</span> Identifying AI skill gaps...</div>
+      <div class="typing-line done"><span class="prompt">▶</span> Loading n8n automation modules...</div>
+      <div class="typing-line done"><span class="prompt">▶</span> Compiling Voice AI workflows...</div>
+      <div class="typing-line done"><span class="prompt">▶</span> Syncing Claude Code frameworks...</div>
+      <div class="typing-line active"><span class="prompt">▶</span> Preparing your unfair advantage<span class="cursor"></span></div>
+      <div class="typing-line"><span class="prompt">▶</span> <span style="opacity:0.3">Awaiting enrollment...</span></div>
+    </div>
+
+    <div class="countdown-block">
+      <div class="cd-label">// window_of_advantage — closing</div>
+      <div class="cd-clock">
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-months">11</div>
+          <div class="cd-lbl">months</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-days">23</div>
+          <div class="cd-lbl">days</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-hours">14</div>
+          <div class="cd-lbl">hours</div>
+        </div>
+      </div>
+      <div class="cd-caption">
+        // "The people who learn to use AI effectively in the next 12 months<br>
+        will have an unfair advantage for years to come." — Zubair Trabzada
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ② TOOLS MATRIX -->
+<section class="tools-section">
+  <div class="tools-header reveal">
+    <h2 class="tools-headline">
+      THE TOOLS<br>
+      THAT <span>PAY</span><br>
+      IN 2025.
+    </h2>
+    <p class="tools-desc">
+      AI isn't the future anymore — it's right now. These are the exact tools inside the workshop. Skills that businesses are paying for today.
+    </p>
+  </div>
+
+  <div class="tool-grid">
+    <div class="tool-row reveal">
+      <div class="tool-status-bar hot"></div>
+      <div class="tool-emoji">⚡</div>
+      <div class="tool-info">
+        <div class="tool-name">n8n AI Automation</div>
+        <div class="tool-use">// build workflows that connect AI to real systems</div>
+      </div>
+      <div class="tool-tag hot">🔥 Core Skill</div>
+    </div>
+
+    <div class="tool-row reveal d1">
+      <div class="tool-status-bar new"></div>
+      <div class="tool-emoji">🎙️</div>
+      <div class="tool-info">
+        <div class="tool-name">Voice AI Agents</div>
+        <div class="tool-use">// deploy agents that handle calls & bookings</div>
+      </div>
+      <div class="tool-tag new-tag">↑ High Demand</div>
+    </div>
+
+    <div class="tool-row reveal">
+      <div class="tool-status-bar new"></div>
+      <div class="tool-emoji">🛠️</div>
+      <div class="tool-info">
+        <div class="tool-name">Claude Code / Vibe Coding</div>
+        <div class="tool-use">// build frontends that turn AI into real products</div>
+      </div>
+      <div class="tool-tag new-tag">NEW Feb '26</div>
+    </div>
+
+    <div class="tool-row reveal d1">
+      <div class="tool-status-bar"></div>
+      <div class="tool-emoji">🧠</div>
+      <div class="tool-info">
+        <div class="tool-name">Vector Databases</div>
+        <div class="tool-use">// build memory and knowledge into your agents</div>
+      </div>
+      <div class="tool-tag">Deep Dive</div>
+    </div>
+
+    <div class="tool-row reveal">
+      <div class="tool-status-bar hot"></div>
+      <div class="tool-emoji">🤖</div>
+      <div class="tool-info">
+        <div class="tool-name">AI Agent Pipelines</div>
+        <div class="tool-use">// multi-step agents that run without you</div>
+      </div>
+      <div class="tool-tag hot">Sellable Skill</div>
+    </div>
+
+    <div class="tool-row reveal d1">
+      <div class="tool-status-bar"></div>
+      <div class="tool-emoji">📡</div>
+      <div class="tool-info">
+        <div class="tool-name">MCP + API Integrations</div>
+        <div class="tool-use">// connect any tool to any system</div>
+      </div>
+      <div class="tool-tag">Advanced</div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ CLIFFHANGER -->
+<section class="cliff">
+  <div class="cliff-inner">
+    <div class="reveal">
+      <div class="cliff-kicker">// inside_the_workshop</div>
+      <h2 class="cliff-headline">
+        SEE WHAT<br>
+        YOU'LL<br>
+        <span>BUILD.</span>
+      </h2>
+      <p class="cliff-body">
+        <strong>Weekly live builds. Ready-to-use blueprints. 100% tech support guaranteed.</strong> Every session teaches you something you can deploy for a client or your own business the same day.
+      </p>
+      <a href="#" class="btn">Join the Workshop →</a>
+      <span class="cliff-note">// $54/month · 7-day money back · Cancel anytime</span>
+    </div>
+
+    <!-- blurred n8n workflow canvas -->
+    <div class="workflow-wrap reveal d2">
+      <div class="workflow-header">
+        <div class="wf-dots">
+          <div class="wf-dot"></div>
+          <div class="wf-dot"></div>
+          <div class="wf-dot"></div>
+        </div>
+        <div class="wf-title">// ai_automation_workflow.json — LOCKED</div>
+      </div>
+
+      <div class="nodes-canvas">
+        <div class="node-row">
+          <div class="node done">
+            <div class="node-icon">📥</div>
+            <div class="node-label">Webhook Trigger</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node active">
+            <div class="node-icon">🧠</div>
+            <div class="node-label">AI Agent (GPT-4)</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node">
+            <div class="node-icon">🔀</div>
+            <div class="node-label">IF Condition</div>
+          </div>
+        </div>
+
+        <div class="node-row" style="padding-left: 60px">
+          <div class="node">
+            <div class="node-icon">📧</div>
+            <div class="node-label">Send Email</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node">
+            <div class="node-icon">🗄️</div>
+            <div class="node-label">Postgres DB</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node done">
+            <div class="node-icon">✅</div>
+            <div class="node-label">Notify Client</div>
+          </div>
+        </div>
+
+        <div class="node-row">
+          <div class="node">
+            <div class="node-icon">🎙️</div>
+            <div class="node-label">Voice Agent</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node">
+            <div class="node-icon">📅</div>
+            <div class="node-label">Cal.com Booking</div>
+          </div>
+          <div class="node-connector"></div>
+          <div class="node active">
+            <div class="node-icon">💬</div>
+            <div class="node-label">Slack Alert</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow-overlay">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-text">Join to Access Blueprints</div>
+        <div class="lock-sub">// ready-to-deploy workflows inside</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // scroll reveal
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('on')), { threshold: 0.08 });
+  els.forEach(el => io.observe(el));
+
+  // live countdown — counts down from now toward end of year
+  function updateClock() {
+    const now = new Date();
+    const end = new Date(now.getFullYear() + 1, 0, 1);
+    const diff = end - now;
+    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.4));
+    const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.4)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    document.getElementById('cd-months').textContent = String(months).padStart(2,'0');
+    document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  }
+  updateClock();
+  setInterval(updateClock, 1000 * 60);
+</script>
+</body>
+</html>
